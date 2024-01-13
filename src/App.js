@@ -1,63 +1,113 @@
-import './App.css';
-import SearchIcon from './search.svg';
-import { useEffect } from 'react';
-//971cc6db
+import React, { useState, useEffect } from "react";
 
-const API_URL = 'https://omdbapi.com?apikey=971cc6db';
+import MovieCard from "./MovieCard";
+import SearchIcon from "./search.svg";
+import "./App.css";
 
-const movie1 = {
-  "Title": "Superman, Spiderman or Batman",
-  "Year": "2011",
-  "imdbID": "tt2084949",
-  "Type": "movie",
-  "Poster": "https://m.media-amazon.com/images/M/MV5BMjQ4MzcxNDU3N15BMl5BanBnXkFtZTgwOTE1MzMxNzE@._V1_SX300.jpg"
-}
+const API_URL = "http://www.omdbapi.com?apikey=971cc6db";
 
 const App = () => {
-    const searchMovies = async (title) => {
-      const response = await fetch(`${API_URL}&s=${title}`);
-      const data = await response.json();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [movies, setMovies] = useState([]);
 
-      console.log(data.Search);
-    }
   useEffect(() => {
-    searchMovies('Spiderman');
-    }, []);
+    searchMovies("Batman");
+  }, []);
+
+  const searchMovies = async (title) => {
+    const response = await fetch(`${API_URL}&s=${title}`);
+    const data = await response.json();
+
+    setMovies(data.Search);
+  };
+
   return (
     <div className="app">
-      <h1>Movies Club</h1>
+      <h1>MovieLand</h1>
 
-      <div className='search'>
+      <div className="search">
         <input
-          placeholder='Search for Movies'
-          value="Superman"
-          onChange={() => {}}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search for movies"
         />
         <img
           src={SearchIcon}
-          alt='search'
-          onClick={() => {}}
+          alt="search"
+          onClick={() => searchMovies(searchTerm)}
         />
       </div>
 
-      <div className='container'>
-        <div className='movie'>
-          <div>
-            <p>{movie1.Year}</p>
-          </div>
-
-          <div>
-            <img src={movie1.Poster !== 'N/A' ? movie1.Poster : 'https://via.placehodler.com/400'} alt={movie1.Title}/>
-          </div>
-
-          <div>
-            <span>{movie1.Type}</span>
-            <h3>{movie1.Title}</h3>
-          </div>
+      {movies?.length > 0 ? (
+        <div className="container">
+          {movies.map((movie) => (
+            <MovieCard movie={movie} />
+          ))}
         </div>
-      </div>
+      ) : (
+        <div className="empty">
+          <h2>No movies found</h2>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default App;
+
+
+// import './App.css';
+// import SearchIcon from './search.svg';
+// import { useEffect, useState } from 'react';
+// import movieCard from './movieCard';
+
+// const API_URL = 'https://omdbapi.com?apikey=971cc6db';
+
+// const App = () => {
+//   const [movies, setMovies] = useState([]);
+//   const [searchTerm, setSearchTerm] = useState("");
+
+//     const searchMovies = async (title) => {
+//       const response = await fetch(`${API_URL}&s=${title}`);
+//       const data = await response.json();
+
+//       setMovies(data.Search);
+//     }
+//   useEffect(() => {
+//     searchMovies('Spiderman');
+//     }, []);
+//   return (
+//     <div className="app">
+//       <h1>Movies Club</h1>
+
+//       <div className='search'>
+//         <input
+//           placeholder='Search for Movies'
+//           value={searchTerm}
+//           onChange={(e) => setSearchTerm(e.target.value)}
+//         />
+//         <img
+//           src={SearchIcon}
+//           alt='search'
+//           onClick={() => searchMovies(searchTerm)}
+//         />
+//       </div>
+
+//       {
+//         movies?.length > 0 ? (
+//           <div className='container'>
+//             {movies.map((movie) => (
+//               <movieCard movie={movie}/>
+//             ))}
+//           </div>
+//         ) : (
+//           <div className='empty'>
+//             <h2>no movies found!</h2>
+//           </div>
+//         )
+//       }
+//     </div>
+//   );
+// };
+
+// export default App;
